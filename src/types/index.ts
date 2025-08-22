@@ -121,6 +121,86 @@ export interface ApiError {
   }>;
 }
 
+export interface Transaction {
+  id: string;
+  status: 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'ETHER_FAILED' | 'MANUAL_PENDING';
+  customerId: string;
+  customer?: Customer;
+  type: 'BUY';
+  amountBrl: string;
+  amountCrypto: string;
+  cryptoCurrency: string;
+  exchangeRate: string;
+  marketRate: string;
+  spreadPercentage: number;
+  feePercentage: number;
+  spread: string;
+  etherTxId?: string;
+  isManual: boolean;
+  etherError?: string;
+  manualConfirmedBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBuyOrderRequest {
+  customerId: string;
+  amountBrl: string;
+  marketRate: string;
+  cryptoCurrency: string;
+  spreadPercentage: number;
+  feePercentage: number;
+}
+
+export interface CustomerBalanceResponse {
+  customerId: string;
+  currency: string;
+  balance: string;
+}
+
+export interface Quote {
+  id: number;
+  name: string;
+  symbol: string;
+  networks: string[];
+  image: string;
+  decimals: number;
+  price: number;
+  canDeposit: boolean;
+  canWithdraw: boolean;
+  fee: string;
+  minDeposit: string;
+  minWithdraw: string;
+}
+
+export interface FormattedQuote {
+  symbol: string;
+  name: string;
+  price: number;
+  priceFormatted: string;
+  networks: string[];
+  canDeposit: boolean;
+  canWithdraw: boolean;
+  minDeposit: string;
+  minWithdraw: string;
+  fees: NetworkFee[];
+}
+
+export interface NetworkFee {
+  network: string;
+  networkFullName: string;
+  time: string;
+  fee: string;
+  feeUsd: number;
+  feeBrl: number;
+}
+
+export interface SupportedCoins {
+  coins: string[];
+}
+
 export type InvoiceStatus = 'PENDING' | 'ASSIGNED_TO_CUSTOMER' | 'PROCESSED';
 export type Gateway = 'FIREBANKING' | 'ETHER';
 export type UserRole = 'ADMIN' | 'OPERATOR' | 'AUDITOR';
+export type TransactionStatus = 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'ETHER_FAILED' | 'MANUAL_PENDING';
+export type CryptoCurrency = 'USDT' | 'BTC' | 'ETH';

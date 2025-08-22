@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Router>
       <ThemeProvider>
-        <div className="font-gilroy">
+        <div className="font-gilroy w-screen h-screen overflow-x-hidden overflow-y-auto">
           <App />
         </div>
       </ThemeProvider>

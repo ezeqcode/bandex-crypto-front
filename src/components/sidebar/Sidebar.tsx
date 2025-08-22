@@ -52,6 +52,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       ),
     },
     {
+      name: "Transações",
+      path: "/transactions",
+      permission: "transactions:read",
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      ),
+    },
+    {
       name: "Webhooks",
       path: "/webhooks",
       permission: "webhooks:read",
@@ -70,9 +80,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   });
 
   return (
-    <div className="min-h-screen flex bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen flex bg-gray-50 overflow-x-hidden ">
       {/* Sidebar */}
-      <div className="bg-white border-r border-gray-200 w-16 flex flex-col relative z-10">
+      <div className="bg-white border-r border-gray-200 w-16 flex flex-col relative z-10 ">
         <div className="flex flex-col h-full">
           {/* User Avatar */}
           <div className="p-4 flex justify-center">
@@ -149,7 +159,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col">
         {children}
       </div>
     </div>

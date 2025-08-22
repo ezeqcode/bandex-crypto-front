@@ -8,6 +8,7 @@ const Dashboard = lazy(() => import("@/pages/Dashboard/Dashboard"));
 const Users = lazy(() => import("@/pages/Users/Users"));
 const Customers = lazy(() => import("@/pages/Customers/Customers"));
 const Invoices = lazy(() => import("@/pages/Invoices/Invoices"));
+const Transactions = lazy(() => import("@/pages/Transactions/Transactions"));
 const Webhooks = lazy(() => import("@/pages/Webhooks/Webhooks"));
 
 const LoadingSpinner = () => (
@@ -79,6 +80,17 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute requiredPermission="invoices:read">
             <Suspense fallback={<LoadingSpinner />}>
               <Invoices />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+      
+      <Route
+        path="/transactions"
+        element={
+          <ProtectedRoute requiredPermission="transactions:read">
+            <Suspense fallback={<LoadingSpinner />}>
+              <Transactions />
             </Suspense>
           </ProtectedRoute>
         }

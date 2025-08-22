@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { webhooksApi, invoicesApi, customersApi } from '@/api';
-import { WebhookStatistics, Invoice, Customer } from '@/types';
+import { webhooksApi, invoicesApi, customersApi, transactionsApi } from '@/api';
+import { WebhookStatistics, Invoice, Customer, Transaction } from '@/types';
 
 const Dashboard: React.FC = () => {
   const { user, hasPermission } = useAuth();
   const [webhookStats, setWebhookStats] = useState<WebhookStatistics | null>(null);
   const [pendingInvoices, setPendingInvoices] = useState<Invoice[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +24,9 @@ const Dashboard: React.FC = () => {
         }
         if (hasPermission('customers:read')) {
           promises.push(customersApi.getCustomers());
+        }
+        if (hasPermission('transactions:read')) {
+          promises.push(transactionsApi.getTransactions());
         }
 
         const results = await Promise.allSettled(promises);
@@ -48,6 +52,14 @@ const Dashboard: React.FC = () => {
           const customerResult = results[index];
           if (customerResult.status === 'fulfilled') {
             setCustomers(customerResult.value);
+          }
+          index++;
+        }
+        
+        if (hasPermission('transactions:read')) {
+          const transactionResult = results[index];
+          if (transactionResult.status === 'fulfilled') {
+            setTransactions(transactionResult.value);
           }
         }
       } catch (error) {
@@ -89,7 +101,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-2xl p-6 relative overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -149,6 +161,26 @@ const Dashboard: React.FC = () => {
             {customers.filter(c => c.isActive).length}
           </div>
         </div>
+
+        <div className="bg-white rounded-2xl p-6 relative overflow-hidden">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 mb-1">Conversões Hoje</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-purple-600 font-medium">{transactions.filter(t => t.status === 'PENDING').length}</span>
+                <span className="text-xs text-gray-500">pendentes</span>
+              </div>
+            </div>
+            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">
+            R$ {transactions.reduce((sum, tx) => sum + parseFloat(tx.spread || '0'), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
+        </div>
       </div>
 
       {/* Financial Operations Section */}
@@ -156,9 +188,9 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Operações Financeiras</h2>
           <div className="flex gap-4">
-            <div className="text-xs text-gray-500 uppercase tracking-wide">Pendentes <span className="ml-2 text-gray-900 font-bold">{pendingInvoices.length}</span></div>
-            <div className="text-xs text-gray-500 uppercase tracking-wide">Não Processados <span className="ml-2 text-gray-900 font-bold">{webhookStats ? webhookStats.unprocessed : 0}</span></div>
-            <div className="text-xs text-gray-500 uppercase tracking-wide">Total Webhooks <span className="ml-2 text-gray-900 font-bold">{webhookStats ? webhookStats.total : 0}</span></div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Invoices Pendentes <span className="ml-2 text-gray-900 font-bold">{pendingInvoices.length}</span></div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Transações Pendentes <span className="ml-2 text-gray-900 font-bold">{transactions.filter(t => t.status === 'PENDING').length}</span></div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Lucro Total <span className="ml-2 text-gray-900 font-bold">R$ {transactions.reduce((sum, tx) => sum + parseFloat(tx.spread || '0'), 0).toFixed(2)}</span></div>
           </div>
         </div>
 
