@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --font-gilroy: 'Gilroy', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  * {
+    font-family: var(--font-gilroy);
+  }
+  
+  body {
+    font-family: var(--font-gilroy);
+    font-weight: 400;
+    font-feature-settings: 'kern' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-gilroy);
+    font-weight: 600;
+  }
+  
+  /* Font loading optimization */
+  @supports (font-display: swap) {
+    @font-face {
+      font-family: 'Gilroy';
+      font-display: swap;
+    }
+  }
+}
