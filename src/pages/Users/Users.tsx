@@ -7,11 +7,7 @@ import React, { useEffect, useState } from 'react';
 const Users: React.FC = () => {
   const { hasPermission } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
-  const [roles] = useState<Role[]>([
-    { id: '1', name: 'ADMIN', permissions: ['users:create', 'users:read', 'users:update', 'users:delete'] },
-    { id: '2', name: 'OPERATOR', permissions: ['invoices:read', 'invoices:assign', 'invoices:process'] },
-    { id: '3', name: 'AUDITOR', permissions: ['users:read', 'webhooks:read', 'invoices:read'] }
-  ]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -27,6 +23,7 @@ const Users: React.FC = () => {
   useEffect(() => {
     if (hasPermission('users:read')) {
       fetchUsers();
+      fetchRoles();
     }
   }, [hasPermission]);
 
@@ -38,6 +35,15 @@ const Users: React.FC = () => {
       console.error('Error fetching users:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const data = await usersApi.getRoles();
+      setRoles(data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
     }
   };
  
